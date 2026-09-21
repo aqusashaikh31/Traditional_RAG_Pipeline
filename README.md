@@ -1,41 +1,44 @@
-Traditional RAG Pipeline
+# 🚀 Traditional RAG Pipeline
 
-A learning project that implements a Traditional Retrieval-Augmented
-Generation (RAG) pipeline using LangChain, Sentence Transformers,
-FAISS, and a Groq LLM.
+A learning project focused on understanding and implementing a **Traditional Retrieval-Augmented Generation (RAG) pipeline** using **LangChain, Sentence Transformers, FAISS, and Groq**.
 
-The project demonstrates the complete RAG workflow: loading documents,
-splitting them into chunks, generating embeddings, storing vectors,
-retrieving relevant chunks, and generating a context-aware response.
+This project demonstrates the complete RAG workflow, including document loading, text splitting, embedding generation, vector storage, similarity-based retrieval, and context-aware response generation.
 
-🚀 RAG Pipeline {#rocket-rag-pipeline}
+---
 
+## 🔄 RAG Pipeline
+
+```text
 Documents
-   ↓
+    ↓
 Document Loading
-   ↓
+    ↓
 Text Chunking
-   ↓
+    ↓
 Embedding Generation
-   ↓
+    ↓
 FAISS Vector Store
-   ↓
+    ↓
 Similarity Search
-   ↓
-Relevant Context
-   ↓
+    ↓
+Relevant Context Retrieval
+    ↓
 Groq LLM
-   ↓
+    ↓
 Generated Response
+```
 
-📁 Project Structure {#file_folder-project-structure}
+---
 
+## 📁 Project Structure
+
+```text
 Traditional_RAG_Pipeline/
 │
 ├── data/
-│   ├── pdf/                 # PDF documents used for the RAG pipeline
-│   ├── text_files/          # Text documents
-│   └── vector_store/        # Stored vector database files
+│   ├── pdf/                    # PDF documents
+│   ├── text_files/             # Text documents
+│   └── vector_store/           # Stored vector database files
 │
 ├── notebook/
 │   ├── 1-langchain-document-components.svg
@@ -44,216 +47,255 @@ Traditional_RAG_Pipeline/
 │
 ├── src/
 │   ├── __init__.py
-│   ├── data_loader.py       # Loads PDF, TXT, CSV, Excel, Word and JSON files
-│   ├── embedding.py         # Chunking and embedding generation
-│   ├── vectorstore.py       # FAISS vector store and similarity search
-│   └── search.py            # Retrieval + LLM response generation
+│   ├── data_loader.py          # Loads different document formats
+│   ├── embedding.py            # Text chunking and embedding generation
+│   ├── vectorstore.py          # FAISS vector store and similarity search
+│   └── search.py               # Retrieval and LLM response generation
 │
-├── app.py                   # Main pipeline entry point
-├── requirements.txt         # Python dependencies
-├── pyproject.toml           # Project configuration and dependencies
-├── uv.lock                  # Locked dependency versions
+├── app.py                      # Main application entry point
+├── requirements.txt            # Project dependencies
+├── pyproject.toml              # Project configuration
+├── uv.lock                     # Locked dependency versions
 ├── .gitignore
 └── README.md
+```
 
-🛠️ Technologies Used {#hammer_and_wrench-technologies-used}
+---
 
-Python 3.13+
+## 🛠️ Technologies Used
 
-LangChain -- document loading and text splitting
+- **Python 3.13+**
+- **LangChain** – document loading and text splitting
+- **Sentence Transformers** – text embedding generation
+- **FAISS** – vector storage and similarity search
+- **Groq / ChatGroq** – LLM-based response generation
+- **PyPDF / PyMuPDF** – PDF document processing
+- **ChromaDB** – vector database experimentation
+- **python-dotenv** – environment variable management
+- **Jupyter Notebook** – experimentation and learning
 
-Sentence Transformers -- text embeddings
+---
 
-FAISS -- vector storage and similarity search
+## ⚙️ How the RAG Pipeline Works
 
-Groq / ChatGroq -- LLM-based response generation
+### 1. 📄 Document Loading
 
-PyPDF / PyMuPDF -- PDF processing
+The `data_loader.py` module loads documents from the `data/` directory.
 
-ChromaDB -- included as a project dependency for vector database
-experimentation
+The project supports multiple document formats:
 
-python-dotenv -- environment variable management
+- PDF
+- TXT
+- CSV
+- Excel
+- Word
+- JSON
 
-Jupyter Notebook -- experimentation and learning
+---
 
-🔄 How It Works {#arrows_counterclockwise-how-it-works}
+### 2. ✂️ Text Chunking
 
-1. Document Loading {#1-document-loading}
+Large documents are divided into smaller and more manageable chunks using LangChain's `RecursiveCharacterTextSplitter`.
 
-src/data_loader.py loads documents from the data/ directory.
+The current configuration is:
 
-Supported formats include:
-
-PDF
-
-TXT
-
-CSV
-
-Excel
-
-Word
-
-JSON
-
-2. Text Chunking {#2-text-chunking}
-
-Large documents are divided into smaller chunks using LangChain's
-RecursiveCharacterTextSplitter.
-
-Default configuration:
-
+```python
 chunk_size = 1000
 chunk_overlap = 200
+```
 
-3. Embedding Generation {#3-embedding-generation}
+Chunking helps the retrieval system work with relevant portions of the document instead of processing the entire document at once.
 
-The project uses:
+---
 
+### 3. 🧠 Embedding Generation
+
+The project uses the following Sentence Transformer model:
+
+```text
 all-MiniLM-L6-v2
+```
 
-from Sentence Transformers to convert text chunks into numerical
-vectors.
+The text chunks are converted into numerical vector representations called **embeddings**.
 
-4. Vector Storage {#4-vector-storage}
+These embeddings allow the system to compare the semantic similarity between the user query and the stored document chunks.
 
-The generated embeddings are stored using FAISS with IndexFlatL2.
+---
 
-This allows the system to perform similarity search and retrieve the
-most relevant document chunks for a user query.
+### 4. 🗄️ Vector Storage
 
-5. Retrieval {#5-retrieval}
+The generated embeddings are stored using **FAISS** with:
 
-For a query such as:
+```text
+IndexFlatL2
+```
 
+FAISS enables efficient similarity search over the generated vector embeddings.
+
+---
+
+### 5. 🔍 Similarity Search & Retrieval
+
+When the user asks a question, the query is converted into an embedding and compared with the stored document vectors.
+
+For example:
+
+```text
 What is embeddings?
+```
 
-the query is converted into an embedding and compared with stored
-document vectors.
+The system retrieves the most relevant document chunks based on vector similarity.
 
-The top relevant chunks are retrieved.
+---
 
-6. Generation {#6-generation}
+### 6. 🤖 Response Generation
 
-The retrieved context is passed to a Groq-hosted LLM through ChatGroq,
-which generates a summary/answer based on the retrieved information.
+The retrieved document context is then passed to a **Groq-hosted LLM through ChatGroq**.
 
-⚙️ Installation {#gear-installation}
+The LLM uses the retrieved context to generate a relevant and context-aware answer.
 
-Clone the repository
+---
 
+## 📦 Installation
+
+### 1. Clone the Repository
+
+```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd Traditional_RAG_Pipeline
+```
 
-Create a virtual environment
+---
+
+### 2. Create a Virtual Environment
 
 Using Python:
 
+```bash
 python -m venv .venv
+```
 
-Activate it on Windows PowerShell:
+Activate the virtual environment on Windows PowerShell:
 
+```powershell
 .venv\Scripts\Activate.ps1
+```
 
-Install dependencies
+---
 
+### 3. Install Dependencies
+
+Using `pip`:
+
+```powershell
 pip install -r requirements.txt
+```
 
-Or, if using uv:
+Or using `uv`:
 
+```powershell
 uv sync
+```
 
-🔑 Environment Variables {#key-environment-variables}
+---
 
-Create a .env file in the project root:
+## 🔑 Environment Variables
 
+Create a `.env` file in the root directory of the project:
+
+```env
 GROQ_API_KEY=your_groq_api_key
+```
 
-Do not upload .env to GitHub.
+> **Important:** Never upload your `.env` file or API keys to GitHub.
 
-The .gitignore file already excludes .env.
+---
 
-Before running the LLM-based search, make sure src/search.py reads
-the Groq API key from the environment rather than hard-coding a
-secret.
+## ▶️ Run the Project
 
-▶️ Run the Project {#arrow_forward-run-the-project}
+From the project root directory, run:
 
-From the project root:
-
+```powershell
 python app.py
+```
 
-The example pipeline loads the documents, builds/loads the FAISS vector
-store, performs a similarity search, and sends retrieved context to the
-LLM for summarization.
+The application loads the documents, works with the FAISS vector store, performs similarity-based retrieval, and sends the retrieved context to the LLM for response generation.
 
-🧪 Example Query {#test_tube-example-query}
+---
 
+## 🧪 Example Query
+
+```text
 What is embeddings?
+```
 
-The system retrieves the most relevant document chunks and generates a
-response using the retrieved context.
+The RAG pipeline retrieves the most relevant document chunks and uses the retrieved context to generate the final response.
 
-📚 Learning Objectives {#books-learning-objectives}
+---
 
-Through this project, I am learning:
+## 📚 Learning Objectives
 
-Document loaders in LangChain
+Through this project, I am learning and practicing:
 
-Recursive text splitting
+- Document loaders in LangChain
+- Recursive text splitting
+- Text embeddings
+- Vector stores
+- FAISS similarity search
+- Retrieval-Augmented Generation (RAG)
+- Context retrieval
+- Connecting retrieved context with an LLM
+- Building a modular RAG pipeline using Python
 
-Text embeddings
+---
 
-Vector databases / vector stores
+## 🔒 GitHub Note
 
-FAISS similarity search
+The following files and folders should **not** be committed to GitHub:
 
-Retrieval-Augmented Generation
-
-Connecting retrieved context with an LLM
-
-Building a modular RAG pipeline with Python
-
-🔒 GitHub Note {#lock-github-note}
-
-The following files/folders should not be committed:
-
+```text
 .venv/
 .env
 __pycache__/
 *.pyc
 faiss_store/
+```
 
-These are already included in .gitignore.
+These are excluded through `.gitignore`.
 
-👩‍💻 Project Status {#woman_technologist-project-status}
+---
 
-This is a learning project focused on understanding and implementing
-a traditional RAG pipeline step by step.
+## 🚧 Project Status
 
-Future improvements can include:
+This is a **learning project** created to understand and implement a traditional RAG pipeline step by step.
 
-Better retrieval strategies
+The project currently focuses on the core RAG workflow:
 
-Metadata filtering
+```text
+Document → Chunking → Embeddings → Vector Store → Retrieval → LLM Response
+```
 
-Hybrid search
+---
 
-Reranking
+## 🔮 Future Improvements
 
-Conversation history
+Some possible improvements for this project include:
 
-Streaming responses
+- Better retrieval strategies
+- Metadata filtering
+- Hybrid search
+- Reranking
+- Conversation history
+- Streaming responses
+- Retrieval quality evaluation
+- Improved prompt templates
+- Production-ready API/UI
 
-Evaluation of retrieval quality
+---
 
-Improved prompt templates
+## 👩‍💻 Author
 
-Production-ready API/UI
+**Aqusa Shaikh**
 
-⭐ Author {#star-author}
-
-Aqusa Shaikh
-
-AI & Data Science Graduate | Learning Generative AI, RAG & Agentic AI
+AI & Data Science Graduate  
+Learning **Generative AI, RAG & Agentic AI**
